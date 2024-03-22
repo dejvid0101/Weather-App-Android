@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.FirstAndroidApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@android:color/holo_blue_bright</item>
+    </style>
+
+    <style name="Theme.FirstAndroidApp" parent="Base.Theme.FirstAndroidApp" />
+</resources>

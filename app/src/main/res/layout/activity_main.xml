@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/holo_blue_light">
+
+    <!-- Search Bar Section -->
+    <EditText
+        android:id="@+id/edit_text_search"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Search City"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/holo_blue_dark" /> <!-- Blue background color -->
+
+    <!-- City Name and Date Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_city_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="City Name"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#ffffff" /> <!-- White text color -->
+
+        <TextView
+            android:id="@+id/text_current_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Date"
+            android:textSize="18sp"
+            android:textColor="#ffffff" /> <!-- White text color -->
+    </LinearLayout>
+
+    <!-- Current Weather Information Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:id="@+id/image_weather_icon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="Weather Icon"
+            android:background="@android:color/transparent" /> <!-- White background for the weather icon -->
+
+        <TextView
+            android:id="@+id/text_current_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Temperature: "
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:textColor="#ffffff" /> <!-- White text color -->
+    </LinearLayout>
+
+    <!-- Weather Condition Section -->
+    <TextView
+        android:id="@+id/text_weather_condition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Weather Condition"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:textColor="#ffffff" /> <!-- White text color -->
+
+
+
+    <!-- Other Weather Information Section -->
+    <TextView
+        android:id="@+id/text_other_weather_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="7 days forecast"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:textColor="#ffffff" /> <!-- White text color -->
+    <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+</LinearLayout>
