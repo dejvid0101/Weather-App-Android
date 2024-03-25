@@ -1,12 +1,16 @@
 package me.projects.firstandroidapp
 
-import WeatherItemAdapter
+import me.projects.firstandroidapp.adapter.WeatherItemAdapter
+import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.projects.firstandroidapp.databinding.ActivityMainBinding
+import me.projects.firstandroidapp.interfaces.OnItemClickListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding: ActivityMainBinding;
 
     private lateinit var itemAdapter: WeatherItemAdapter
@@ -18,6 +22,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
+
+
     }
 
     private fun setupRecyclerView() {
@@ -26,9 +32,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerView.apply {
             layoutManager=LinearLayoutManager(this@MainActivity);
-            adapter = WeatherItemAdapter(itemList)
+            adapter = WeatherItemAdapter(itemList, this@MainActivity)
         }
 
+    }
+
+    override fun onItemClick(day: String) {
+        Toast.makeText(this, "Day: $day", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this@MainActivity, DayForecastActivity::class.java))
     }
 
 }
