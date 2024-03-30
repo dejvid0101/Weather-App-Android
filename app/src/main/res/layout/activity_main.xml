@@ -11,7 +11,7 @@
         android:id="@+id/edit_text_search"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:hint="Search City"
+        android:hint="@string/search_city"
         android:inputType="text"
         android:imeOptions="actionSearch"
         android:layout_marginBottom="16dp"
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="City Name"
+            android:text="City nameeee"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#ffffff" /> <!-- White text color -->
@@ -37,12 +37,12 @@
             android:id="@+id/text_current_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Current Date"
+            android:text="Current Dateeee"
             android:textSize="18sp"
             android:textColor="#ffffff" /> <!-- White text color -->
     </LinearLayout>
 
-    <!-- Current Weather Information Section -->
+    <!-- me.projects.firstandroidapp.models.Current Weather Information Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
         android:id="@+id/text_weather_condition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Weather Condition"
+        android:text="@string/weather_conditions"
         android:textSize="18sp"
         android:layout_marginTop="16dp"
         android:textColor="#ffffff" /> <!-- White text color -->
@@ -85,7 +85,7 @@
         android:id="@+id/text_other_weather_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="7 days forecast"
+        android:text="@string/forecast_7_days"
         android:textSize="18sp"
         android:layout_marginTop="16dp"
         android:textColor="#ffffff" /> <!-- White text color -->

@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">FirstAndroidApp</string>
+    <string name="search_city">Search city</string>
+    <string name="weather_conditions">Weather conditions</string>
+    <string name="forecast_7_days">7 days forecast</string>
 </resources>

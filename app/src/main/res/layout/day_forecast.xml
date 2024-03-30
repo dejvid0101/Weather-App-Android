@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Day Forecast Activity"
         android:textSize="24sp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:id="@+id/tv_temp"/>
 
 </LinearLayout>
