@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.projects.firstandroidapp.databinding.ActivityMainBinding
 import me.projects.firstandroidapp.interfaces.OnItemClickListener
 import me.projects.firstandroidapp.network.ApiClient
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
     override fun onItemClick(temp: String) {
 
+        fetchForecast()
+
         //Toast.makeText(this, "Day: $temp", Toast.LENGTH_SHORT).show()
         startActivity(
             Intent(
@@ -61,12 +64,17 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
             try {
                 // Perform the API call asynchronously using suspend function
-                val forecast = service.getForecastForCity("Zag", "1")
+                val forecast = service.getForecastForCity("Zag", "4")
 
-                // Handle the result here
-                // For example, print the user data
-                binding.textCurrentTemperature.text = forecast.current.tempC.toString() + "°C"
-            } catch (e: Exception) {
+                // Switch to the main thread to update UI
+                withContext(Dispatchers.Main) {
+                    // Handle the result here
+                    // For example, print the user data
+                    binding.textCurrentTemperature.text = forecast.current.tempC.toString() + "°C"
+                    binding.textCityName.text=forecast.location.name
+                    binding.textCurrentDate.text=forecast.current.lastUpdated
+                    binding.textWeatherCondition.text=forecast.forecast.forecastday[1].day.tempC.toString() + "°C"
+                }} catch (e: Exception) {
                 // Handle any exceptions
                 println("Error fetching forecast: ${e.message}")
             }

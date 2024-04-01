@@ -1,5 +1,5 @@
 package me.projects.firstandroidapp.network
-import ForecastDTO
+import me.projects.firstandroidapp.models.ForecastDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
