@@ -22,5 +22,6 @@ data class DailyWeather(
     @SerializedName("daily_will_it_snow") val dailyWillItSnow: Int,
     @SerializedName("daily_chance_of_snow") val dailyChanceOfSnow: Int,
     @SerializedName("condition") val condition: Condition,
-    @SerializedName("uv") val uv: Double
+    @SerializedName("uv") val uv: Double,
+    @SerializedName("hour") val hours: List<Hour>
 ){}

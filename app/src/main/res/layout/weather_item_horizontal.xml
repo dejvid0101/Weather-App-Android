@@ -1,17 +1,17 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="120dp"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_marginTop="16dp"
+    android:orientation="vertical"
+    android:layout_marginRight="16dp"
     app:cardCornerRadius="8dp"
     android:id="@+id/daily_cardview">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center_vertical">
 
         <ImageView
@@ -23,7 +23,7 @@
             android:background="@android:color/transparent" /> <!-- White background for the weather icon -->
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="16dp"
@@ -33,7 +33,7 @@
                 android:id="@+id/banner_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12:00"
+                android:text="Wednesday"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -47,7 +47,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/text_current_temperature"
+            android:id="@+id/text_current_temperature_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

@@ -2,4 +2,6 @@
     <string name="search_city">Pretraži gradove</string>
     <string name="weather_conditions">Vremenski uvjeti</string>
     <string name="forecast_7_days">Sedmodnevna prognoza</string>
+    <string name="forecast_hourly">Prognoza po satu</string>
+
 </resources>
