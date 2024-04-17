@@ -9,5 +9,6 @@ data class Hour(
 )
 
 data class HourlyCondition(
-    @SerializedName("text") val text: String
+    @SerializedName("text") val text: String,
+    @SerializedName("icon") val icon: String
 )
