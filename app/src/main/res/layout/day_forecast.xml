@@ -1,16 +1,98 @@
 <!-- day-forecast.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center">
+<!-- activity_weather.xml -->
 
-    <TextView
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Day Forecast Activity"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
-        android:id="@+id/tv_temp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
 
-</LinearLayout>
+        <!-- Add your new TextView here -->
+        <TextView
+            android:id="@+id/tv_bannerHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/humidity"
+            android:textSize="20sp"
+            android:layout_marginRight="2dp"/>
+
+        <!-- Existing TextView -->
+        <TextView
+            android:id="@+id/tv_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weather Condition"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+    <!-- Weather icon -->
+    <ImageView
+        android:id="@+id/image_weather_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="Weather Icon" />
+
+    <!-- Location name -->
+    <TextView
+        android:id="@+id/text_location_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_weather_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Location Name"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Current temperature -->
+    <TextView
+        android:id="@+id/text_current_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_location_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Temperature"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
+    <!-- Rain chance -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="320dp"
+        android:orientation="horizontal">
+
+        <!-- Add your new TextView here -->
+        <TextView
+            android:id="@+id/tv_another"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rain_chance"
+            android:textSize="20sp"
+            android:layout_marginRight="2dp"/>
+
+        <!-- Existing TextView -->
+        <TextView
+            android:id="@+id/tv_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weather Condition"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+
+    <!-- Other weather details (e.g., humidity, wind speed, etc.) -->
+    <!-- Add additional TextViews or other UI elements here -->
+
+</RelativeLayout>

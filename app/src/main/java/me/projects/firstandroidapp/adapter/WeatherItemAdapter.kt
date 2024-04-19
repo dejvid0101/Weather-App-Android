@@ -61,8 +61,6 @@ class WeatherItemAdapter(private val forecast: ForecastDTO, private val listener
 
         fun bind(position: Int) {
 
-
-
             if (isHourly) {
                 val hour = forecast.forecast.forecastday[0].hours[adapterPosition]
                 textViewTemp.text = hour.tempC.toString()
@@ -77,7 +75,9 @@ class WeatherItemAdapter(private val forecast: ForecastDTO, private val listener
         }
 
         override fun onClick(view: View) {
-            listener.onItemClick(textViewTemp.text.toString())
+            listener.onItemClick(isHourly, adapterPosition)
+            println(forecast.forecast.forecastday[adapterPosition])
+
         }
     }
 }

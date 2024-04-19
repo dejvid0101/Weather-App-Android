@@ -1,6 +1,7 @@
 package me.projects.firstandroidapp.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class CurrentWeather(
     @SerializedName("last_updated") val lastUpdated: String,
@@ -14,6 +15,6 @@ data class CurrentWeather(
     @SerializedName("cloud") val cloud: Int,
     @SerializedName("feelslike_c") val feelslikeC: Double,
     @SerializedName("feelslike_f") val feelslikeF: Double
-) {
+) : Serializable {
 }
 

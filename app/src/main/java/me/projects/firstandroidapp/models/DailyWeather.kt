@@ -1,6 +1,7 @@
 package me.projects.firstandroidapp.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class DailyWeather(
     @SerializedName("maxtemp_c") val tempC: Double,
@@ -24,4 +25,4 @@ data class DailyWeather(
     @SerializedName("condition") val condition: Condition,
     @SerializedName("uv") val uv: Double,
     @SerializedName("hour") val hours: List<Hour>
-){}
+): Serializable

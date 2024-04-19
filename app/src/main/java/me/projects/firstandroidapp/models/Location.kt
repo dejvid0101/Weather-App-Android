@@ -1,6 +1,7 @@
 package me.projects.firstandroidapp.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Location(
     @SerializedName("name") val name: String,
@@ -11,4 +12,4 @@ data class Location(
     @SerializedName("tz_id") val timezoneId: String,
     @SerializedName("localtime_epoch") val localtimeEpoch: Long,
     @SerializedName("localtime") val localtime: String
-)
+): Serializable

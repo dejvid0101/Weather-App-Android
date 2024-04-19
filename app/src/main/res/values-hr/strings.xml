@@ -3,5 +3,6 @@
     <string name="weather_conditions">Vremenski uvjeti</string>
     <string name="forecast_7_days">Sedmodnevna prognoza</string>
     <string name="forecast_hourly">Prognoza po satu</string>
-
+    <string name="rain_chance">Vjerojatnost kiše:</string>
+    <string name="humidity">Vlažnost zraka:</string>
 </resources>

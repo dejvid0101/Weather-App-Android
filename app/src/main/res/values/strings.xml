@@ -3,4 +3,6 @@
     <string name="weather_conditions">Weather conditions</string>
     <string name="forecast_7_days">7 days forecast</string>
     <string name="forecast_hourly">Hourly forecast</string>
+    <string name="rain_chance">Chance of rain:</string>
+    <string name="humidity">Humidity:</string>
 </resources>

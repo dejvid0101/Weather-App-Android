@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onItemClick(temp: String) {
+    override fun onItemClick(isHourly: Boolean, itemPosition: Int) {
 
         CoroutineScope(Dispatchers.IO).launch {fetchForecast()
 
@@ -81,8 +81,11 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             Intent(
                 this@MainActivity,
                 DayForecastActivity::class.java
-            ).putExtra("temperature", temp)
-        )
+            )
+                .putExtra("dailyForecast", forecast.forecast.forecastday[itemPosition].day)
+                .putExtra("info", forecast)
+            )
+
 
     }
 
@@ -94,7 +97,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             try {
 
                 // Perform the API call asynchronously using suspend function
-                val forecast = service.getForecastForCity("Zag", "4")
+                forecast = service.getForecastForCity("Zag", "4")
                 println(forecast)
 
                 forecast // Return the forecast object
