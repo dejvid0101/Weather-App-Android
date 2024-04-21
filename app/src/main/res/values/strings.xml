@@ -5,4 +5,5 @@
     <string name="forecast_hourly">Hourly forecast</string>
     <string name="rain_chance">Chance of rain:</string>
     <string name="humidity">Humidity:</string>
+    <string name="forecast_share_subject">Current weather for</string>
 </resources>

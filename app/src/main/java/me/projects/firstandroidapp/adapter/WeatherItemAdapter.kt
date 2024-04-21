@@ -25,7 +25,7 @@ class WeatherItemAdapter(private val forecast: ForecastDTO, private val listener
 
     override fun getItemCount(): Int {
         return if (isHourly) {
-            24
+            forecast.forecast.forecastday[0].hours.size
         } else {
             forecast.forecast.forecastday.size
         }
@@ -76,7 +76,7 @@ class WeatherItemAdapter(private val forecast: ForecastDTO, private val listener
 
         override fun onClick(view: View) {
             listener.onItemClick(isHourly, adapterPosition)
-            println(forecast.forecast.forecastday[adapterPosition])
+            println("weather item clicked")
 
         }
     }

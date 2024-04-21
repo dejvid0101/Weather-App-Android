@@ -5,4 +5,5 @@
     <string name="forecast_hourly">Prognoza po satu</string>
     <string name="rain_chance">Vjerojatnost kiše:</string>
     <string name="humidity">Vlažnost zraka:</string>
+    <string name="forecast_share_subject">Trenutno vrijeme u</string>
 </resources>

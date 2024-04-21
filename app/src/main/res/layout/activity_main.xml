@@ -45,7 +45,17 @@
             android:text="Current Dateeee"
             android:textSize="18sp"
             android:textColor="#ffffff" /> <!-- White text color -->
+
+        <!-- Share Button -->
+
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share"
+        android:layout_gravity="right"
+        android:onClick="onShareClicked" />
 
     <!-- me.projects.firstandroidapp.models.Current Weather Information Section -->
     <LinearLayout

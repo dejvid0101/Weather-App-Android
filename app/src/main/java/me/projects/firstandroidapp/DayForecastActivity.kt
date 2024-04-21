@@ -33,7 +33,7 @@ class DayForecastActivity : AppCompatActivity() {
             // For example, you can set it to a TextView
             if (dailyForecast != null&& info != null) {
                 findViewById<TextView>(binding.textCurrentTemperature.id).text = dailyForecast.tempC.toString()
-                findViewById<TextView>(binding.tvTemp.id).text = dailyForecast.dailyChanceOfRain.toString()
+                findViewById<TextView>(binding.tvTemp.id).text = dailyForecast.dailyChanceOfRain.toString()+"%"
                 findViewById<TextView>(binding.textLocationName.id).text = info.location.name
                 findViewById<TextView>(binding.tvHumidity.id).text = dailyForecast.humidity.toString()+"%"
 
