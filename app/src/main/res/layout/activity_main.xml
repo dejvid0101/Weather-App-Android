@@ -12,15 +12,16 @@
     android:background="@android:color/holo_blue_light">
 
     <!-- Search Bar Section -->
-    <EditText
-        android:id="@+id/edit_text_search"
+    <AutoCompleteTextView
+        android:id="@+id/autocomplete_search"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:hint="@string/search_city"
         android:inputType="text"
         android:imeOptions="actionSearch"
         android:layout_marginBottom="16dp"
-        android:background="@android:color/holo_blue_dark" /> <!-- Blue background color -->
+        android:background="@android:color/holo_blue_dark"
+        android:completionThreshold="1"/> <!-- Blue background color -->
 
     <!-- City Name and Date Section -->
     <LinearLayout

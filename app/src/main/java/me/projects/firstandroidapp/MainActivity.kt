@@ -2,20 +2,25 @@ package me.projects.firstandroidapp
 
 import me.projects.firstandroidapp.adapter.WeatherItemAdapter
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.projects.firstandroidapp.adapter.AutocompleteCitiesAdapter
 import me.projects.firstandroidapp.databinding.ActivityMainBinding
 import me.projects.firstandroidapp.interfaces.OnItemClickListener
+import me.projects.firstandroidapp.models.AutocompleteLocation
 import me.projects.firstandroidapp.models.Condition
 import me.projects.firstandroidapp.models.CurrentWeather
 import me.projects.firstandroidapp.models.DailyWeather
@@ -27,7 +32,8 @@ import me.projects.firstandroidapp.models.HourlyCondition
 import me.projects.firstandroidapp.models.Location
 import me.projects.firstandroidapp.network.ApiClient
 import me.projects.firstandroidapp.network.ApiSvc
-import java.net.SocketTimeoutException
+import java.io.File
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding: ActivityMainBinding;
@@ -35,12 +41,60 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     private var hourlyRecyclerView: RecyclerView?=null
     private var dailyRecyclerView: RecyclerView?=null
     private var savedScrollPositionHourly: Int = 0
+    private lateinit var citiesInputStream: InputStream;
+    private lateinit var cities: Array<AutocompleteLocation>;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(binding.root)
         setupRecyclerView(savedInstanceState)
+        citiesInputStream= this@MainActivity.resources.openRawResource(R.raw.cities)
+
+
+
+        GlobalScope.launch(Dispatchers.Default){
+            loadAutocompleteCities()
+
+            withContext(Dispatchers.Main){
+                setAutocompleteAdapter()
+            }
+        }
+
     }
+
+    private fun setAutocompleteAdapter() {
+        val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.autocomplete_search)
+
+        val namesList: MutableList<String> = mutableListOf()
+
+        // Extract names from AutocompleteLocation objects and add them to the mutable list for adapter compatibility
+        for (location in cities) {
+            namesList.add(location.name)
+        }
+
+        val adapter = AutocompleteCitiesAdapter(this, namesList)
+        autoCompleteTextView.setAdapter(adapter)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_item1 -> {
+                // Start the new activity
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_home, menu)
+        return true
+    }
+
 
     private fun setupRecyclerView(savedInstanceState: Bundle?) {
 
@@ -119,6 +173,25 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
+    private fun loadAutocompleteCities(){
+        val jsonContent = citiesInputStream.bufferedReader().use { it.readText() }
+
+        // Check if JSON data is not null
+        if (jsonContent != null) {
+            try {
+                // Parse JSON data using Gson
+                val gson = Gson()
+                cities = gson.fromJson(jsonContent, Array<AutocompleteLocation>::class.java)
+
+                // Do something with yourObject
+                println(cities[4].name)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else {
+            println("Failed to load JSON data from the file.")
+        }
+    }
     fun onShareClicked(view: View) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain" // Set the MIME type of the content you're sharing
@@ -183,6 +256,20 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
                 // You can throw the exception here or return a default forecast object
                 throw e
             }
+        }
+    }
+
+    private fun loadJsonFromFile(filePath: String): String? {
+        return try {
+            // Read the contents of the text file
+            val file = File(filePath)
+            val text = file.readText()
+
+            text
+        } catch (e: Exception) {
+            // Handle any exceptions that occur (e.g., file not found, IO exception)
+            e.printStackTrace()
+            null
         }
     }
 
