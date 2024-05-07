@@ -12,17 +12,35 @@
     android:background="@android:color/holo_blue_light">
 
     <!-- Search Bar Section -->
-    <AutoCompleteTextView
-        android:id="@+id/autocomplete_search"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:hint="@string/search_city"
-        android:inputType="text"
-        android:imeOptions="actionSearch"
-        android:layout_marginBottom="16dp"
-        android:background="@android:color/holo_blue_dark"
-        android:completionThreshold="1"/> <!-- Blue background color -->
+        android:layout_height="match_parent"
+        android:background="@android:color/holo_blue_light"
+        android:padding="16dp">
 
+        <!-- AutoCompleteTextView -->
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_toLeftOf="@+id/btnSave"
+            android:hint="Search"
+            android:completionThreshold="1" /> <!-- Adjust completionThreshold as needed -->
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/search_city"
+            android:onClick="onSaveClicked"/>
+
+    </RelativeLayout>
     <!-- City Name and Date Section -->
     <LinearLayout
         android:layout_width="match_parent"

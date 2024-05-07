@@ -6,4 +6,7 @@
     <string name="rain_chance">Vjerojatnost kiše:</string>
     <string name="humidity">Vlažnost zraka:</string>
     <string name="forecast_share_subject">Trenutno vrijeme u</string>
+    <string name="default_location">Početna lokacija:</string>
+    <string name="save">Spremi</string>
+
 </resources>

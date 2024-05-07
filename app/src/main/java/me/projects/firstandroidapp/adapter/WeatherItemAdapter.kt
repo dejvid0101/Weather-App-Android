@@ -14,9 +14,23 @@ import me.projects.firstandroidapp.R
 import me.projects.firstandroidapp.interfaces.OnItemClickListener
 import me.projects.firstandroidapp.models.ForecastDTO
 import com.bumptech.glide.Glide
+import me.projects.firstandroidapp.models.Condition
+import me.projects.firstandroidapp.models.CurrentWeather
+import me.projects.firstandroidapp.models.DailyWeather
+import me.projects.firstandroidapp.models.ForecastDay
+import me.projects.firstandroidapp.models.ForecastDays
+import me.projects.firstandroidapp.models.Hour
+import me.projects.firstandroidapp.models.HourlyCondition
+import me.projects.firstandroidapp.models.Location
 
-class WeatherItemAdapter(private val forecast: ForecastDTO, private val listener: OnItemClickListener, private val isHourly: Boolean) : RecyclerView.Adapter<WeatherItemAdapter.ViewHolder>() {
+class WeatherItemAdapter(private var forecast: ForecastDTO, private val listener: OnItemClickListener, private val isHourly: Boolean) : RecyclerView.Adapter<WeatherItemAdapter.ViewHolder>() {
 
+    fun change(newForecast: ForecastDTO) {
+        //initialize lateinit property to placeholder object
+        forecast = newForecast
+        // Notify the adapter that the data set has changed
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutId = if (isHourly) R.layout.weather_item else R.layout.weather_item_horizontal
         val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
@@ -33,7 +47,6 @@ class WeatherItemAdapter(private val forecast: ForecastDTO, private val listener
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(position)
-
 
         if(isHourly) {
             // load cdn icon to ImageView

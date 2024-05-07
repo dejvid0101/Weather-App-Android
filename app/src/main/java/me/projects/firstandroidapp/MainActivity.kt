@@ -1,5 +1,6 @@
 package me.projects.firstandroidapp
 
+import android.content.Context
 import me.projects.firstandroidapp.adapter.WeatherItemAdapter
 import android.content.Intent
 import android.os.Bundle
@@ -48,10 +49,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(binding.root)
-        setupRecyclerView(savedInstanceState)
+        setupRecyclerView(savedInstanceState, "Bucuresti")
         citiesInputStream= this@MainActivity.resources.openRawResource(R.raw.cities)
-
-
 
         GlobalScope.launch(Dispatchers.Default){
             loadAutocompleteCities()
@@ -96,7 +95,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     }
 
 
-    private fun setupRecyclerView(savedInstanceState: Bundle?) {
+    private fun setupRecyclerView(savedInstanceState: Bundle?, city: String) {
 
 
         // Start a new coroutine on the main thread
@@ -104,7 +103,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             // Fetch forecast data
 
             try {
-                forecast = fetchForecast()
+                forecast = fetchForecast(city)
             } catch  (e: Exception) {
                 withContext(Dispatchers.Main) {
 
@@ -209,6 +208,18 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         }
     }
 
+    fun onSaveClicked(view: View) {
+        CoroutineScope(Dispatchers.IO).launch {
+
+            forecast = fetchForecast(binding.autocompleteSearch.text.toString())
+
+            withContext(Dispatchers.Main){
+                (hourlyRecyclerView?.adapter as WeatherItemAdapter).change(forecast)
+                (dailyRecyclerView?.adapter as WeatherItemAdapter).change(forecast)
+            }
+        }
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         // Save the current scroll position
@@ -220,7 +231,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
         CoroutineScope(Dispatchers.IO).launch {
 
-                fetchForecast()
+                fetchForecast("Orlando")
         }
 
         if(!isHourly) {
@@ -238,7 +249,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
     }
 
-    private suspend fun fetchForecast(): ForecastDTO {
+    private suspend fun fetchForecast(city: String): ForecastDTO {
+
         return withContext(Dispatchers.IO) {
             // Create an instance of the API service
             val service = ApiClient.retrofit.create(ApiSvc::class.java)
@@ -246,7 +258,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             try {
 
                 // Perform the API call asynchronously using suspend function
-                forecast = service.getForecastForCity("Zag", "4")
+                forecast = service.getForecastForCity(city, "4")
                 println(forecast)
 
                 forecast // Return the forecast object
@@ -258,20 +270,5 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             }
         }
     }
-
-    private fun loadJsonFromFile(filePath: String): String? {
-        return try {
-            // Read the contents of the text file
-            val file = File(filePath)
-            val text = file.readText()
-
-            text
-        } catch (e: Exception) {
-            // Handle any exceptions that occur (e.g., file not found, IO exception)
-            e.printStackTrace()
-            null
-        }
-    }
-
 }
 
