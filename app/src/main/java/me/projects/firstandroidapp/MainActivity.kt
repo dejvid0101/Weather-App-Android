@@ -1,8 +1,13 @@
 package me.projects.firstandroidapp
 
+import ForecastContract
+import ForecastDBHelper
+import android.content.ContentValues
 import android.content.Context
 import me.projects.firstandroidapp.adapter.WeatherItemAdapter
 import android.content.Intent
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,13 +17,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.projects.firstandroidapp.adapter.AutocompleteCitiesAdapter
+import me.projects.firstandroidapp.data_access.DBUtilz.Companion.getMostRecentCurrentWeatherRow
+import me.projects.firstandroidapp.data_access.DBUtilz.Companion.getMostRecentLocationRow
+import me.projects.firstandroidapp.data_access.DBUtilz.Companion.insertWeatherDataRow
 import me.projects.firstandroidapp.databinding.ActivityMainBinding
 import me.projects.firstandroidapp.interfaces.OnItemClickListener
 import me.projects.firstandroidapp.models.AutocompleteLocation
@@ -35,6 +45,8 @@ import me.projects.firstandroidapp.network.ApiClient
 import me.projects.firstandroidapp.network.ApiSvc
 import java.io.File
 import java.io.InputStream
+import java.time.LocalDateTime
+import java.util.Date
 
 class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding: ActivityMainBinding;
@@ -49,7 +61,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(binding.root)
-        setupRecyclerView(savedInstanceState, "Bucuresti")
+        setupHomepage(savedInstanceState, "Bucuresti")
         citiesInputStream= this@MainActivity.resources.openRawResource(R.raw.cities)
 
         GlobalScope.launch(Dispatchers.Default){
@@ -57,10 +69,88 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
             withContext(Dispatchers.Main){
                 setAutocompleteAdapter()
+                delay(4000)
+                binding.textCityName.text = forecast.location.name
+                binding.textCurrentDate.text=forecast.forecast.forecastday[0].date
+                binding.textCurrentTemperature.text=forecast.current.tempC.toString()+"°C"
+                val imageUrl = "https://" + forecast.current.condition.icon
+                Glide.with(this@MainActivity.binding.imageWeatherIcon)
+                    .load(imageUrl)
+                    .into(this@MainActivity.binding.imageWeatherIcon)
+
+                // Initialize database instance
+                val dbHelper = ForecastDBHelper(this@MainActivity)
+                val db = dbHelper.writableDatabase
+                // Access the database as needed
+
+// Define the columns you want to retrieve from the table
+                val projectionLocation = arrayOf(
+                    ForecastContract.LocationEntry._ID,
+                    ForecastContract.LocationEntry.COLUMN_NAME_NAME
+                    // Add other column names here as needed
+                )
+
+                val projectionCurrent = arrayOf(
+                    ForecastContract.CurrentWeatherEntry.COLUMN_NAME_TEMP_C,
+                    ForecastContract.CurrentWeatherEntry.COLUMN_NAME_LAST_UPDATED
+                    // Add other column names here as needed
+                )
+
+// Execute the query
+                val selectLocation = db.query(
+                    ForecastContract.LocationEntry.TABLE_NAME,
+                    projectionLocation,
+                    null, // selection
+                    null, // selectionArgs
+                    null, // groupBy
+                    null, // having
+                    null // orderBy
+                )
+
+                if(forecast.location.name!="") insertWeatherDataRow(db, forecast)
+
+                val recentCurrent = getMostRecentCurrentWeatherRow(db)
+
+                val recentLocation=getMostRecentLocationRow(db)
+
+// Iterate over the result set
+                recentLocation.use { // Ensures the cursor is closed when done
+                    if (it != null) {
+                        while (it.moveToNext()) {
+                            // Retrieve values from the cursor
+                            val id = it.getLong(it.getColumnIndexOrThrow(ForecastContract.LocationEntry._ID))
+                            val name = it.getString(it.getColumnIndexOrThrow(ForecastContract.LocationEntry.COLUMN_NAME_NAME))
+                            // Retrieve values of other columns similarly
+
+                            // Process the retrieved values as needed (e.g., print them)
+                            println("ID: $id, Name: $name")
+                        }
+                    }
+                }
+
+
+                recentCurrent.use { // Ensures the cursor is closed when done
+                    if (it != null) {
+                        while (it.moveToNext()) {
+                            // Retrieve values from the cursor
+                            val name = it.getString(it.getColumnIndexOrThrow(ForecastContract.CurrentWeatherEntry.COLUMN_NAME_TEMP_C))
+                            val temp = it.getString(it.getColumnIndexOrThrow(ForecastContract.CurrentWeatherEntry.COLUMN_NAME_LAST_UPDATED))
+                            // Retrieve values of other columns similarly
+
+                            // Process the retrieved values as needed (e.g., print them)
+                            println("Temp: $name, Last updated: $temp")
+                        }
+                    }
+                }
             }
         }
 
+
+
+
     }
+
+
 
     private fun setAutocompleteAdapter() {
         val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.autocomplete_search)
@@ -74,6 +164,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
         val adapter = AutocompleteCitiesAdapter(this, namesList)
         autoCompleteTextView.setAdapter(adapter)
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -95,7 +187,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     }
 
 
-    private fun setupRecyclerView(savedInstanceState: Bundle?, city: String) {
+    private fun setupHomepage(savedInstanceState: Bundle?, city: String) {
+
 
 
         // Start a new coroutine on the main thread
@@ -170,6 +263,8 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
             }
         }
+
+
     }
 
     private fun loadAutocompleteCities(){
@@ -190,6 +285,9 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         } else {
             println("Failed to load JSON data from the file.")
         }
+
+
+
     }
     fun onShareClicked(view: View) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
@@ -214,6 +312,14 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
             forecast = fetchForecast(binding.autocompleteSearch.text.toString())
 
             withContext(Dispatchers.Main){
+                binding.textCityName.text = forecast.location.name
+                binding.textCurrentDate.text=forecast.forecast.forecastday[0].date
+                binding.textCurrentTemperature.text=forecast.current.tempC.toString()+"°C"
+                val imageUrl = "https://" + forecast.current.condition.icon
+                Glide.with(this@MainActivity.binding.imageWeatherIcon)
+                    .load(imageUrl)
+                    .into(this@MainActivity.binding.imageWeatherIcon)
+
                 (hourlyRecyclerView?.adapter as WeatherItemAdapter).change(forecast)
                 (dailyRecyclerView?.adapter as WeatherItemAdapter).change(forecast)
             }
