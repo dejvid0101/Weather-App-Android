@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.bumptech.glide.Glide
+import me.projects.firstandroidapp.background.Worker
 import me.projects.firstandroidapp.databinding.DayForecastBinding
 import me.projects.firstandroidapp.models.DailyWeather
 import me.projects.firstandroidapp.models.ForecastDTO
@@ -19,6 +22,9 @@ class DayForecastActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         processIntentExtras(intent)
+
+        val workRequest = OneTimeWorkRequestBuilder<Worker>().build()
+        WorkManager.getInstance(this@DayForecastActivity).enqueue(workRequest)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

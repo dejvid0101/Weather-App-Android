@@ -2,12 +2,19 @@ package me.projects.firstandroidapp
 
 import ForecastContract
 import ForecastDBHelper
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ContentValues
 import android.content.Context
 import me.projects.firstandroidapp.adapter.WeatherItemAdapter
 import android.content.Intent
+import android.content.IntentFilter
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -43,10 +50,11 @@ import me.projects.firstandroidapp.models.HourlyCondition
 import me.projects.firstandroidapp.models.Location
 import me.projects.firstandroidapp.network.ApiClient
 import me.projects.firstandroidapp.network.ApiSvc
-import java.io.File
+import me.projects.firstandroidapp.network.NetworkListener
+import androidx.core.app.NotificationCompat
+import me.projects.firstandroidapp.utils.JSONUtilz
 import java.io.InputStream
-import java.time.LocalDateTime
-import java.util.Date
+
 
 class MainActivity : AppCompatActivity(), OnItemClickListener {
     private lateinit var binding: ActivityMainBinding;
@@ -55,17 +63,19 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
     private var dailyRecyclerView: RecyclerView?=null
     private var savedScrollPositionHourly: Int = 0
     private lateinit var citiesInputStream: InputStream;
-    private lateinit var cities: Array<AutocompleteLocation>;
+    private lateinit var networkListener: NetworkListener
 
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(layoutInflater);
         setContentView(binding.root)
-        setupHomepage(savedInstanceState, "Bucuresti")
+        setupHomepage(savedInstanceState, "rosenheim")
         citiesInputStream= this@MainActivity.resources.openRawResource(R.raw.cities)
 
+        networkListener= NetworkListener()
+
         GlobalScope.launch(Dispatchers.Default){
-            loadAutocompleteCities()
 
             withContext(Dispatchers.Main){
                 setAutocompleteAdapter()
@@ -146,20 +156,53 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
         }
 
 
+    }
 
+    private fun declareNotification() {
+        val intent = Intent(this, DayForecastActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
+        val notification = NotificationCompat.Builder(this, "4")
+            .setContentTitle(forecast.location.name)
+            .setContentText(forecast.forecast.forecastday.first().day.condition.text
+                            + ", " +forecast.forecast.forecastday.first().day.tempC)
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT) // Set the priority for older versions
+            .build()
+
+        val notificationManager: NotificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Fefe"
+            val descriptionText = "Notifikacija"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("4", name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        notificationManager.notify(4, notification)
+        println("Ja volim srati")
     }
 
 
 
     private fun setAutocompleteAdapter() {
+        var cities=JSONUtilz.loadAutocompleteCities(citiesInputStream)
+
         val autoCompleteTextView = findViewById<AutoCompleteTextView>(R.id.autocomplete_search)
 
         val namesList: MutableList<String> = mutableListOf()
 
         // Extract names from AutocompleteLocation objects and add them to the mutable list for adapter compatibility
-        for (location in cities) {
-            namesList.add(location.name)
+        if (cities != null) {
+            for (location in cities) {
+                namesList.add(location.name)
+            }
         }
 
         val adapter = AutocompleteCitiesAdapter(this, namesList)
@@ -197,6 +240,7 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
             try {
                 forecast = fetchForecast(city)
+                declareNotification()
             } catch  (e: Exception) {
                 withContext(Dispatchers.Main) {
 
@@ -267,27 +311,17 @@ class MainActivity : AppCompatActivity(), OnItemClickListener {
 
     }
 
-    private fun loadAutocompleteCities(){
-        val jsonContent = citiesInputStream.bufferedReader().use { it.readText() }
+    override fun onResume() {
+        super.onResume()
+        // Register network receiver
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkListener, filter)
+    }
 
-        // Check if JSON data is not null
-        if (jsonContent != null) {
-            try {
-                // Parse JSON data using Gson
-                val gson = Gson()
-                cities = gson.fromJson(jsonContent, Array<AutocompleteLocation>::class.java)
-
-                // Do something with yourObject
-                println(cities[4].name)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        } else {
-            println("Failed to load JSON data from the file.")
-        }
-
-
-
+    override fun onPause() {
+        super.onPause()
+        // Unregister network receiver
+        unregisterReceiver(networkListener)
     }
     fun onShareClicked(view: View) {
         val sharingIntent = Intent(Intent.ACTION_SEND)
